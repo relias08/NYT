@@ -1,0 +1,11 @@
+****************************************
+Instructions for running the Spark Code
+****************************************
+If we were dealing with big data, the input file could have had billions of rows and petabytes in size and stored across a cluster of computers ie. in a distributed file storage system like HDFS or a NoSQL database like MongoDB or Cassandra
+
+In this example we are using an input file (ie. hygdata_v3.csv) that is stored in the local file system. So first make sure that 'hygdata_v3.csv' is
+also present in the same folder as the kstars.py file. 
+
+Then run the following command in a terminal:
+
+$ spark-submit kstars.py 10

@@ -1,12 +1,5 @@
-Before running the the spark code in kstars.py, first make sure that the input data ie. 'hygdata_v3.csv' is
-also present in the same folder as the kstars.py file. (However, when dealing with big data, the input file could be 
-petabytes in size and ideally stored in a distributed file storage system like HDFS or a NoSQL database like MongoDB
-or Cassandra).
-To run the spark code, run the following command in a terminal:
+SPARK OUPUT:
 
-$ spark-submit kstars.py 10
-
-OUPUT:
 Co-ordinates of the 10 nearest stars from the Sun
 
 +------+----------------+---------+---------+---------+------------------+      
