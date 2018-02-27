@@ -1,0 +1,19 @@
+Question 3 and Question 4 would be more in line for someone specialized as an AWS Solutions Architect or Network Administrator.
+
+My expertise is in the area of big data engineering and analytics.
+The job description I received indicates requirement for skills to modernize systems for ingesting, storing and processing big data.
+I do have the skills that meet these requirements such as:
+
+- Ingest and process big data from multiple sources (including streaming data using technologies such as Kafka, Sqoop, Flume, etc.)
+  eg. from Oracle/PostreSQL/Streaming data sources into HDFS/MongoDB/Cassandra/HBase
+- Store data of unlimited size in a scalable and fault tolerant manner in distributed file storage systems such as NoSQL databases, HDFS, etc.
+- Work with cloud computing platforms and Spark Clusters in the cloud eg. using AWS EMR, Hortonworks or Cloudera 
+- Data Transformation using Spark (ie. feature engineering, creating derived variables, etc. for Report generating programs and 
+  Machine Learing algorithms)
+- Machine Learning and Predictive Modelling using Spark
+- Graphical representation and creating dashboards with the results (eg. using Tableau) 
+
+If the position requires any of the above skills I would be extremely interested.
+
+
+
