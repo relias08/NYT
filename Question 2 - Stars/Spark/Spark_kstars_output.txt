@@ -1,0 +1,39 @@
+Before running the the spark code in kstars.py, first make sure that the input data ie. 'hygdata_v3.csv' is
+also present in the same folder as the kstars.py file. (However, when dealing with big data, the input file could be 
+petabytes in size and ideally stored in a distributed file storage system like HDFS or a NoSQL database like MongoDB
+or Cassandra).
+To run the spark code, run the following command in a terminal:
+
+$ spark-submit kstars.py 10
+
+OUPUT:
+Co-ordinates of the 10 nearest stars from the Sun
+
++------+----------------+---------+---------+---------+------------------+      
+
+|    id|          proper|        x|        y|        z|          distance|
+
++------+----------------+---------+---------+---------+------------------+
+
+|     0|             Sol|   5.0E-6|      0.0|      0.0|               0.0|
+
+| 70666|Proxima Centauri|-0.472264|-0.361451|-1.151219|1.2957584727575582|
+
+| 71453|            null|-0.495181|-0.413973|-1.156674|1.3245669336054708|
+
+| 71456| Rigil Kentaurus|-0.495203|-0.414084|-1.156625|1.3245670662314537|
+
+| 87665|  Barnard's Star|-0.017373|-1.816613| 0.149123|1.8228062035723929|
+
+|118720|            null|-2.282811| 0.649334| 0.292057|2.3912718006661224|
+
+| 53879|   Lalande 21185|   -1.998| 0.504305| 1.495504| 2.546149981259156|
+
+|118079|            null| 2.270499|  1.04697|-0.809963| 2.628179835229127|
+
+|118080|            null| 2.270631| 1.047031| -0.81001| 2.628332655303929|
+
+| 32263|          Sirius|-0.494323| 2.476731|-0.758485|2.6370165174245686|
+
++------+----------------+---------+---------+---------+------------------+
+

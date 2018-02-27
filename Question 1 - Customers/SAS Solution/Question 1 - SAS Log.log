@@ -1,0 +1,188 @@
+9454  /*  NYT Assignment - Question 1 */
+9455
+9456  /***********************************************************************************************
+9456! *****/
+9457  /*  Question 1a: Write a query to select the name of each customer and his or her latest order
+9457! date */
+9458  /***********************************************************************************************
+9458! *****/
+9459
+9460  options nonumber nodate;
+9461
+9462  data customers;
+9463  input customer_id name :$20.;
+9464  datalines;
+
+NOTE: The data set WORK.CUSTOMERS has 3 observations and 2 variables.
+NOTE: DATA statement used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+
+9468  ;
+9469
+9470  data orders;
+9471  input order_id quantity order_date yymmdd10. customer_id;
+9472  datalines;
+
+NOTE: The data set WORK.ORDERS has 7 observations and 4 variables.
+NOTE: DATA statement used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+
+9480  ;
+9481  run;
+9482
+9483  /*Merge customers and orders*/
+9484  proc sort data = customers;
+9485      by customer_id;
+9486  run;
+
+NOTE: There were 3 observations read from the data set WORK.CUSTOMERS.
+NOTE: The data set WORK.CUSTOMERS has 3 observations and 2 variables.
+NOTE: PROCEDURE SORT used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+
+9487
+9488  proc sort data = orders;
+9489      by customer_id;
+9490  run;
+
+NOTE: There were 7 observations read from the data set WORK.ORDERS.
+NOTE: The data set WORK.ORDERS has 7 observations and 4 variables.
+NOTE: PROCEDURE SORT used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+
+9491
+9492  data customers_orders;
+9493      merge customers (in = a)
+9494            orders (in = b);
+9495      by customer_id;
+9496  run;
+
+NOTE: There were 3 observations read from the data set WORK.CUSTOMERS.
+NOTE: There were 7 observations read from the data set WORK.ORDERS.
+NOTE: The data set WORK.CUSTOMERS_ORDERS has 7 observations and 5 variables.
+NOTE: DATA statement used:
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+
+
+9497
+9498  /* Calculate final order date */
+9499  proc sort data = customers_orders;
+9500      by customer_id order_date;
+9501  run;
+
+NOTE: There were 7 observations read from the data set WORK.CUSTOMERS_ORDERS.
+NOTE: The data set WORK.CUSTOMERS_ORDERS has 7 observations and 5 variables.
+NOTE: PROCEDURE SORT used:
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+
+
+9502
+9503  data final_order_date (rename = (order_date = final_order_date) );
+9504      set customers_orders;
+9505      by customer_id order_date;
+9506      if last.customer_id;
+9507  run;
+
+NOTE: There were 7 observations read from the data set WORK.CUSTOMERS_ORDERS.
+NOTE: The data set WORK.FINAL_ORDER_DATE has 3 observations and 5 variables.
+NOTE: DATA statement used:
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+
+
+9508
+9509  proc print data = final_order_date;
+9510      var name final_order_date;
+9511      format final_order_date yymmdd10.;
+9512      title "Last order date of each customer";
+9513  run;
+
+NOTE: There were 3 observations read from the data set WORK.FINAL_ORDER_DATE.
+NOTE: PROCEDURE PRINT used:
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+
+
+9514  title;
+9515
+9516  /************************************************************/
+9517  /* Question 1b: Calculate change in quantity between orders */
+9518  /************************************************************/
+9519  /*
+9520  Find which customers have changed their behaviour the most from one order to the next
+
+9521  Calculate the largest absolute change in quantity (positive or negative) between orders.
+
+9522  Caveats:
+9523  a) If two orders for a customer occur on the same day, consider them one order with the sum as
+9523! the quantity
+9524  b) Days when a customer has not ordered anything should not be considered at all, as opposed to
+9524! considering them 0 quantity
+9525  c) Ignore the theoretical increase between the time they were not a customer and their first
+9525! order, as well as customers that may only have one order
+9526  */
+9527
+9528  data change;
+9529      set customers_orders;
+9530      by customer_id order_date;
+9531
+9532      /* To remove customers that have only one order */
+9533      if first.customer_id and last.customer_id then delete;
+9534
+9535      /* To calculate total_daily_order of each customer */
+9536      if first.order_date then total_daily_order = 0;
+9537      total_daily_order + quantity;
+9538      if last.order_date;
+9539
+9540      /* To remove rows with quantity = 0 */
+9541      if quantity ne 0;
+9542  run;
+
+NOTE: There were 7 observations read from the data set WORK.CUSTOMERS_ORDERS.
+NOTE: The data set WORK.CHANGE has 4 observations and 6 variables.
+NOTE: DATA statement used:
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+
+
+9543
+9544  /* To calculate difference */
+9545  data change_final;
+9546      set change;
+9547      by customer_id order_date;
+9548      lag_ = lag(quantity);
+9549      if first.customer_id then lag_ = .;
+9550      else diff = total_daily_order - lag_;
+9551      if diff ne .;
+9552  run;
+
+NOTE: There were 4 observations read from the data set WORK.CHANGE.
+NOTE: The data set WORK.CHANGE_FINAL has 2 observations and 8 variables.
+NOTE: DATA statement used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+
+9553
+9554  proc print data = change_final;
+9555      var name order_date diff;
+9556      format order_date yymmdd10.;
+9557      title "Change in quantity between orders";
+9558  run;
+
+NOTE: There were 2 observations read from the data set WORK.CHANGE_FINAL.
+NOTE: PROCEDURE PRINT used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+

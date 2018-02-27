@@ -1,0 +1,109 @@
+317  options mprint nonumber nodate;
+318
+319  %macro stars (k= ,x1= ,y1= ,z1= ,path= );
+320      data stars;
+321          infile "&path" dlm = ',' dsd truncover firstobs = 2;
+322          input id hip hd hr gl $ bf $ proper :$20. ra dec dist pmra pmdec rv mag absmag spect
+322! :$100. ci x  y  z  vx vy vz rarad decrad pmrarad pmdecrad bayer $
+323          flam con :$100. comp comp_primary base $ lum var $ var_min var_max;
+324       
+325      run;
+326
+327      data small (keep = id proper x y z x0 y0 z0 dist);
+328          set stars ;
+329          retain x0 y0 z0 0;
+330          if _n_ = 1 then do;
+331              %if &x1 ne %then x0 = &x1;
+332              %else x0 = x;;
+333              %if &y1 ne %then y0 = &y1;
+334              %else y0 = y;;
+335              %if &z1 ne %then z0 = &z1;
+336              %else z0 = z;;
+337          end;
+338          else dist = ((x - x0)**2 + (y - y0)**2 + (z-z0)**2)** 0.5;
+339      run;
+340
+341      proc sort data = small;
+342          by dist;
+343      run;
+344
+345      proc print data = small (obs = %eval(&k + 1));
+346          title "Co-ordinates of the &k nearest stars from the Sun";
+347          var id proper x y z dist;
+348      run;
+349      title;
+350  %mend stars;
+351
+352  /* Instructions to run the above macro - example to get the co-ordinates of the 5 nearest stars
+352! from the Sun:
+353  %stars (k=5 ,x1= ,y1= , z1= , path=enter_path_to_hygdata_v3.csv)
+354  */
+355
+356  %stars (k=10 ,x1= ,y1= , z1= , path=C:\Documents and
+356! Settings\Administrator\Desktop\hygdata_v3.csv)
+MPRINT(STARS):   data stars;
+MPRINT(STARS):   infile "C:\Documents and Settings\Administrator\Desktop\hygdata_v3.csv" dlm = ','
+dsd truncover firstobs = 2;
+MPRINT(STARS):   input id hip hd hr gl $ bf $ proper :$20. ra dec dist pmra pmdec rv mag absmag spect
+:$100. ci x y z vx vy vz rarad decrad pmrarad pmdecrad bayer $ flam con :$100. comp comp_primary base
+$ lum var $ var_min var_max;
+MPRINT(STARS):   if id in (0, 70666, 71453, 71456, 87665, 118720, 53879, 118079, 118080, 32263);
+MPRINT(STARS):   run;
+
+NOTE: The infile "C:\Documents and Settings\Administrator\Desktop\hygdata_v3.csv" is:
+      File Name=C:\Documents and Settings\Administrator\Desktop\hygdata_v3.csv,
+      RECFM=V,LRECL=256
+
+NOTE: 119614 records were read from the infile "C:\Documents and
+      Settings\Administrator\Desktop\hygdata_v3.csv".
+      The minimum record length was 83.
+      The maximum record length was 256.
+      One or more lines were truncated.
+NOTE: The data set WORK.STARS has 10 observations and 37 variables.
+NOTE: DATA statement used:
+      real time           2.64 seconds
+      cpu time            2.51 seconds
+
+
+MPRINT(STARS):   data small (keep = id proper x y z x0 y0 z0 dist);
+MPRINT(STARS):   set stars ;
+MPRINT(STARS):   retain x0 y0 z0 0;
+MPRINT(STARS):   if _n_ = 1 then do;
+MPRINT(STARS):   x0 = x;
+MPRINT(STARS):   y0 = y;
+MPRINT(STARS):   z0 = z;
+MPRINT(STARS):   end;
+MPRINT(STARS):   else dist = ((x - x0)**2 + (y - y0)**2 + (z-z0)**2)** 0.5;
+MPRINT(STARS):   run;
+
+NOTE: There were 10 observations read from the data set WORK.STARS.
+NOTE: The data set WORK.SMALL has 10 observations and 9 variables.
+NOTE: DATA statement used:
+      real time           0.01 seconds
+      cpu time            0.01 seconds
+
+
+MPRINT(STARS):   proc sort data = small;
+MPRINT(STARS):   by dist;
+MPRINT(STARS):   run;
+
+NOTE: There were 10 observations read from the data set WORK.SMALL.
+NOTE: The data set WORK.SMALL has 10 observations and 9 variables.
+NOTE: PROCEDURE SORT used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+
+MPRINT(STARS):   proc print data = small (obs = 11);
+MPRINT(STARS):   title "Co-ordinates of the 10 nearest stars from the Sun";
+MPRINT(STARS):   var id proper x y z dist;
+MPRINT(STARS):   run;
+
+NOTE: There were 10 observations read from the data set WORK.SMALL.
+NOTE: PROCEDURE PRINT used:
+      real time           0.00 seconds
+      cpu time            0.00 seconds
+
+
+MPRINT(STARS):   title;
+

@@ -1,0 +1,17 @@
+                                   Last order date of each customer
+
+                                                          final_
+                                    Obs      name       order_date
+
+                                     1     COMPANY_A    2015-01-03
+                                     2     COMPANY_B    2015-01-03
+                                     3     COMPANY_C    2015-01-02
+
+
+
+                                  Change in quantity between orders
+
+                                Obs      name       order_date    diff
+
+                                 1     COMPANY_A    2015-01-03     -23
+                                 2     COMPANY_B    2015-01-02      15
