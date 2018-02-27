@@ -1,0 +1,61 @@
+-- Create table called customers
+DROP TABLE IF EXISTS customers, orders, customers_orders, change1, change2, change3, change4;
+
+create table customers (
+	customer_id integer,
+	name varchar(20));
+    
+insert into customers (customer_id, name) 
+values (1, 'COMPANY_A'), (2, 'COMPANY_B'), (3, 'COMPANY_C');
+
+-- Create table called 'orders'
+SET datestyle = "ISO, YMD";    
+create table orders (
+    order_id integer,
+    quantity integer,
+    order_date date,
+    customer_id integer);
+
+insert into orders (order_id, quantity, order_date, customer_id)
+values (1002, 12, '2015-01-01', 2), (1003, 10, '2015-01-02', 2), 
+	  (1004, 17, '2015-01-02', 2), (1003, 0, '2015-01-03', 2), 
+       (1003, 32, '2015-01-01', 1), (1003, 9, '2015-01-03', 1),
+       (1003, 62, '2015-01-02', 3);
+       
+-- Merge customers and orders
+create table customers_orders as
+select c.*, order_id, quantity, order_date from customers c, orders o where c.customer_id = o.customer_id;
+
+-- *******************************
+-- Obtain Name & Final Order Date
+-- *******************************
+select name, max(order_date) from customers_orders group by name;
+
+-- ********************************************
+-- Calculate change in quantity between orders
+-- ********************************************
+-- Calculate total_orders_perday + remove rows with quantity = 0
+create table change1 as
+select customer_id, name, order_date, sum(quantity) as total_orders_perday 
+from customers_orders
+group by customer_id, name, order_date 
+having sum(quantity) != 0 
+order by customer_id, order_date;
+
+-- create lag variable
+create table change2 as
+select *, lag(total_orders_perday) over(partition by customer_id order by order_date) as lag_ from change1;
+
+-- create row_number() by customer_id
+create table change3 as
+select *, row_number() over(partition by customer_id order by order_date) as rn from change2; 
+
+-- calculate change in quantity between orders
+create table change4 as
+select *, (total_orders_perday - lag_) as diff from change3;
+
+-- Ignore theoretical increase between the time they were not a customer and their first order,
+-- as well as customers that may have only one order
+select name, diff from change4 where rn != 1;
+
+-- End of Program
