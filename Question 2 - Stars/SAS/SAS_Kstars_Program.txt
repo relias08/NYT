@@ -34,6 +34,8 @@ options mprint nonumber nodate;
 
 /* Instructions to run the above macro - example to get the co-ordinates of the 5 nearest stars from the Sun:
 %stars (k=5 ,x1= ,y1= , z1= , path=enter_path_to_hygdata_v3.csv)
+
+   We can also provide values for x1, y1 and z1 to get the co-ordinates of the K nearest stars from an arbitrary point
 */
 
 %stars (k=10 ,x1= ,y1= , z1= , path=C:\Documents and Settings\Administrator\Desktop\hygdata_v3.csv)
